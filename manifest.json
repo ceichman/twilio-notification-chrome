@@ -6,11 +6,12 @@
   "action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
-  }
+  },
   "content_scripts": [ 
       {
           "matches": [ "*://flex.twilio.com/agent-desktop/" ],
           "js": [ "content-script.js" ]
       }
+  ]
 }
 
