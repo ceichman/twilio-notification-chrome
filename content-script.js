@@ -36,7 +36,7 @@ const observeDOM = ( function() {
   }
 })();
 
-const tasksFrame = document.querySelector(".Twilio-AgentDesktopView.Panel1");
+const tasksFrame = document.querySelector(".target");
 const sound = new Audio('sounds/sound.mp3');
 
 observeDOM(tasksFrame, function(mutations) {
@@ -44,6 +44,7 @@ observeDOM(tasksFrame, function(mutations) {
         if (record.addedNodes.length) {
             // play sound, or do some other debug thing
             sound.play();
+            alert("detected content change");
             break;
         }
     }
