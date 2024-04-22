@@ -37,11 +37,13 @@ const observeDOM = ( function() {
 })();
 
 const tasksFrame = document.querySelector(".Twilio-AgentDesktopView.Panel1");
+const sound = new Audio('sounds/sound.mp3');
 
 observeDOM(tasksFrame, function(mutations) {
     for (record of mutations) {
         if (record.addedNodes.length) {
             // play sound, or do some other debug thing
+            sound.play();
             break;
         }
     }
