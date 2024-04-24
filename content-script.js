@@ -1,4 +1,6 @@
 /*
+ * matches string for manifest.json.content-scripts[0].matches
+ * "matches": [ "*://flex.twilio.com/agent-desktop/" ]
  *
  * html class of panel1: Twilio-AgentDesktopView.Panel1
  * 
@@ -37,14 +39,13 @@ const observeDOM = ( function() {
 })();
 
 const tasksFrame = document.querySelector(".target");
-const sound = new Audio('sounds/sound.mp3');
 
 observeDOM(tasksFrame, function(mutations) {
     for (record of mutations) {
         if (record.addedNodes.length) {
             // play sound, or do some other debug thing
-            sound.play();
-            alert("detected content change");
+            // sound.play();
+            chrome.runtime.sendMessage( {action: "play-sound"} );
             break;
         }
     }
