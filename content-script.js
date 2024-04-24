@@ -38,7 +38,7 @@ const observeDOM = ( function() {
   }
 })();
 
-const tasksFrame = document.querySelector(".target");
+const tasksFrame = document.querySelector(".Twilio-AgentDesktopView.Panel1");
 const sound = new Audio(chrome.runtime.getURL('sounds/sound.mp3'));
 
 observeDOM(tasksFrame, function(mutations) {
