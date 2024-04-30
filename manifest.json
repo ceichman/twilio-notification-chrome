@@ -13,12 +13,12 @@
   "web_accessible_resources": [
       {
           "resources": [ "sounds/sound.mp3" ],
-          "matches": [ "<all_urls>" ]
+          "matches": [ "*://flex.twilio.com/*" ]
       }
   ],
   "content_scripts": [ 
       {
-          "matches": [ "<all_urls>" ],
+          "matches": [ "*://flex.twilio.com/agent-desktop/" ],
           "js": [ "content-script.js" ]
       }
   ]
