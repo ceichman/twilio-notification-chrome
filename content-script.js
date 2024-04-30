@@ -38,35 +38,44 @@ const observeDOM = ( function() {
   }
 })();
 
+const sound = new Audio(chrome.runtime.getURL('sounds/sound.mp3'));
+
 let tasksFrame = document.querySelector(".Twilio-Splitter-Pane");
 const resetTasksFrame = () => {
-    if ((!tasksFrame) || (JSON.stringify(tasksFrame) === "{}") ) {
+    if (!(tasksFrame)) {
         // if the selector missed
         console.log("frame selector missed on: ", JSON.stringify(tasksFrame));
+        console.log(tasksFrame)
         setTimeout(() => {
             tasksFrame = document.querySelector(".Twilio-Splitter-Pane");
             resetTasksFrame();
-        }, 100);
+        }, 1000);
     }
     else {
         // if it hit
-        console.log("got the task frame: " + JSON.stringify(tasksFrame))
+        // console.log("got the task frame: " + JSON.stringify(tasksFrame))
+        // console.log(tasksFrame)
+
+        // register dom observer
+        observeDOM(tasksFrame, function(mutations) {
+            if ((!tasksFrame) || (tasksFrame === {}) ) {
+                tasksFrame = document.querySelector(".Twilio-Splitter-Pane");
+            }
+            for (record of mutations) {
+                if (record.addedNodes.length) {
+                    taskAlert();
+                    break;
+                }
+            }
+        });
+
+
     }
 }
 resetTasksFrame();
 
-const sound = new Audio(chrome.runtime.getURL('sounds/sound.mp3'));
-
-observeDOM(tasksFrame, function(mutations) {
-    if ((!tasksFrame) || (tasksFrame === {}) ) {
-        tasksFrame = document.querySelector(".Twilio-Splitter-Pane");
-    }
-    for (record of mutations) {
-        if (record.addedNodes.length) {
-            // play sound, or do some other debug thing
-            alert("dom change located")
-            sound.play();
-            break;
-        }
-    }
-});
+function taskAlert() {
+    // play sound, or do some other debug thing
+    // alert("dom change located")
+    sound.play();
+}
