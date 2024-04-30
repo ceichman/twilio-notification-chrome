@@ -2,17 +2,14 @@
 const input = document.getElementById("upload")
 input.addEventListener("change", openFile, false)
 function openFile(event) {
+    const audioElement = document.createElement("audio");
     const file = event.target.files[0]
     var reader = new FileReader();
-    reader.onload = function(f) {
-        return function(e) {
-            console.log(f)
-            const audio = new Audio();
-            audio.src = f;
-            audio.play();
-        }
-    }(file);
     reader.readAsDataURL(file);
+    reader.onload = function(f) {
+        audioElement.src=f.target.result
+        const filename = file.name
+    };
 }
 
 /*
