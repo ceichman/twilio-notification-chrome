@@ -7,6 +7,9 @@
     "default_popup": "popup.html",
     "default_icon": "icon.png"
   },
+  "permissions": [
+    "storage"
+  ],
   "web_accessible_resources": [
       {
           "resources": [ "sounds/sound.mp3" ],
