@@ -3,7 +3,8 @@
  * "matches": [ "*://flex.twilio.com/agent-desktop/" ]
  *
  * html class of panel1: Twilio-Splitter-Pane
- * 
+ * html class of task item: Twilio-TaskListBaseItem
+ *
  * detect changes in DOM using MutationObserver: 
  * https://stackoverflow.com/questions/3219758/detect-changes-in-the-dom
  *
@@ -44,7 +45,7 @@ const frameSelector = ".Twilio-Splitter-Pane";
 
 let tasksFrame = document.querySelector(frameSelector);
 const resetTasksFrame = () => {
-    if (!(tasksFrame)) {
+    if (!(tasksFrame) || !(tasksFrame.style)) {
         // if the selector missed
         // console.log("frame selector missed on: ", JSON.stringify(tasksFrame));
         // console.log(tasksFrame)
@@ -55,14 +56,14 @@ const resetTasksFrame = () => {
     }
     else {
         // if it hit
-        // console.log("got the task frame: " + JSON.stringify(tasksFrame))
-        // console.log(tasksFrame)
+        console.log("got the task frame: " + JSON.stringify(tasksFrame))
+        console.log(tasksFrame)
 
         // register dom observer
         observeDOM(tasksFrame, function(mutations) {
-            for (record of mutations) {
+            for (let record of mutations) {
                 if (record.addedNodes.length) {
-                    taskAlert();
+                    taskAlert(record);
                     break;
                 }
             }
@@ -73,8 +74,34 @@ const resetTasksFrame = () => {
 }
 resetTasksFrame();
 
-function taskAlert() {
-    // play sound, or do some other debug thing
+const taskCanvasClass = "Twilio-TaskListBaseItem"
+
+// play sound, or do some other debug thing
+function taskAlert(record) {
     // alert("dom change located")
-    sound.play();
+
+    // addedNodes[0] guaranteed since addedNodes.length > 0
+    const targetNode = record.addedNodes[0]
+    const maybeTaskNode = targetNode.firstChild.firstChild.firstChild.firstChild.firstChild.firstChild
+    console.log("mutation record : ")
+    console.log(record)
+    // TODO: figure out how to identify the task node from deep within the subtree
+    console.log("maybe task node: ")
+    console.log(maybeTaskNode)
+    // is it anything OTHER than a new task? if so, return (no sound played)
+    // if (!targetNode.classList) return;
+    if (!maybeTaskNode.classList.contains(taskCanvasClass)) {
+        // console.log("blocked something from making sound")
+        return
+    }
+
+    // catch DOMException in case the audio context fails to play (tab not in focus)
+    // TODO: put a slider in the popup to enable/disable sounds playing
+    sound.play()
+        .then((err) => {
+            if (!err) return;
+            console.log("taskAlert error: ")
+            console.log(err)
+        })
+
 }
