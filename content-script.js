@@ -15,7 +15,14 @@
 
 /*
  *  use like: observeDOM(HTMLElement target, function(mutationRecordList) => { callback })
+ *
  */
+
+let muted = false;
+chrome.storage.local.get(["muted"]).then((result) => {
+    muted = result;
+});
+
 const observeDOM = ( function() {
   const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
@@ -95,14 +102,15 @@ function taskAlert(record) {
         return;
     }
 
-    // catch DOMException in case the audio context fails to play (tab not in focus)
-    // TODO: put a slider in the popup to enable/disable sounds playing
-    sound.play()
-        .then((err) => {
-            if (!err) return;
-            console.log("taskAlert error: ")
-            console.log(err)
-        })
+    if (!muted) {
+        // catch DOMException in case the audio context fails to play (tab not in focus)
+        try {
+            sound.play();
+        }
+        catch (error) {
+            console.error(error);
+        }
+    }
 
 }
 
@@ -137,3 +145,9 @@ function findClassInSubtree(element, targetClassName, levels = 7) {
     }
 }
 
+// Update mute options settings when changed in chrome.storange.local.
+chrome.storge.onChanged.addEventListener((changes, area) => {
+    if (area === "sync" && changes.mute?.newValue) {
+        muted = changes.mute.newValue;
+    }
+})
