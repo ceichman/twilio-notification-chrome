@@ -3,3 +3,36 @@ body {
     text-align: center;
     margin: 20px;
 }
+
+i {
+    margin: 3px;
+}
+
+button {
+    height: 30px;
+    margin: 10px;
+}
+
+.visually-hidden {
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    height: 1px;
+    overflow: hidden;
+    position: absolute;
+    white-space: nowrap;
+    width: 1px;
+}
+
+label {
+    background: #dfdfdf;
+    border: 1px grey;
+    border-radius: 3px;
+}
+
+input.visually-hidden:is(:hover, :focus, :focus-within) + label {
+    outline: thin solid;
+}
+
+i {
+    padding: 8px;
+}

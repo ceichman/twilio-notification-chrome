@@ -19,10 +19,10 @@
 const observeDOM = ( function() {
   const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
 
-  return function( obj, callback ){
+  return function( obj, callback ) {
     if( !obj || obj.nodeType !== 1 ) return; 
 
-    if( MutationObserver ){
+    if( MutationObserver ) {
       // define a new observer
       const mutationObserver = new MutationObserver(callback)
 
@@ -32,7 +32,8 @@ const observeDOM = ( function() {
     }
     
     // browser support fallback
-    else if( window.addEventListener ){
+    else if( window.addEventListener )
+    {
       obj.addEventListener('DOMNodeInserted', callback, false)
       obj.addEventListener('DOMNodeRemoved', callback, false)
     }
@@ -74,25 +75,24 @@ const resetTasksFrame = () => {
 }
 resetTasksFrame();
 
+
 const taskCanvasClass = "Twilio-TaskListBaseItem"
 
-// play sound, or do some other debug thing
+// What happens when a splitter-pane child is added.
 function taskAlert(record) {
     // alert("dom change located")
 
     // addedNodes[0] guaranteed since addedNodes.length > 0
     const targetNode = record.addedNodes[0]
-    const maybeTaskNode = targetNode.firstChild.firstChild.firstChild.firstChild.firstChild.firstChild
+    const levels = 7;
+    const isTaskElement = findClassInSubtree(targetNode, taskCanvasClass, levels);
     console.log("mutation record : ")
     console.log(record)
-    // TODO: figure out how to identify the task node from deep within the subtree
-    console.log("maybe task node: ")
-    console.log(maybeTaskNode)
+    console.log(`found task element in targetNode subtree: ${isTaskElement}`);
     // is it anything OTHER than a new task? if so, return (no sound played)
-    // if (!targetNode.classList) return;
-    if (!maybeTaskNode.classList.contains(taskCanvasClass)) {
-        // console.log("blocked something from making sound")
-        return
+    if (!isTaskElement) {
+        console.log("blocked something from making sound")
+        return;
     }
 
     // catch DOMException in case the audio context fails to play (tab not in focus)
@@ -105,3 +105,35 @@ function taskAlert(record) {
         })
 
 }
+
+// To be called on an HTMLElement. Searches its classList for a particular targetClassName.
+function hasClassName(element, targetClassName) {
+    const classList = element.classList;
+    if (classList) {
+        for (const className of classList) {
+            if (className === targetClassName) {
+                return true;
+            }
+        }
+    }
+    // if no classList, or target class wasn't found
+    return false;
+}
+
+// Finds a targetClassName in a DOM subtree of given element.
+function findClassInSubtree(element, targetClassName, levels = 7) {
+    if (levels === 0) {   // base case
+        return hasClassName(element, targetClassName);
+    }
+    else {  // recursive case
+        // if an intermediate node has it, return true early (don't traverse to bottom of tree)
+        if (hasClassName(element, targetClassName)) return true;
+        if (!element.children) return false;
+        let result = false;
+        for (const child of element.children) {
+            result |= findClassInSubtree(child, targetClassName, levels - 1);
+        }
+        return result;
+    }
+}
+
