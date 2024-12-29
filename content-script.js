@@ -102,6 +102,8 @@ function taskAlert(record) {
         return;
     }
 
+    requestNotification();
+
     if (!muted) {
         // catch DOMException in case the audio context fails to play (tab not in focus)
         try {
@@ -112,6 +114,23 @@ function taskAlert(record) {
         }
     }
 
+}
+
+function requestNotification() {
+    fetch('https://twilio.girlslab.org:3000/send-notification', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ message: "You received a task!" }),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Notification sent to provider server:', data);
+    })
+    .catch(err => {
+        console.error('Failed to send notification:', err);
+    });
 }
 
 // To be called on an HTMLElement. Searches its classList for a particular targetClassName.
@@ -145,7 +164,7 @@ function findClassInSubtree(element, targetClassName, levels = 7) {
     }
 }
 
-// Update mute options settings when changed in chrome.storange.local.
+// Update mute options settings when changed in chrome.storage.local.
 chrome.storge.onChanged.addEventListener((changes, area) => {
     if (area === "sync" && changes.mute?.newValue) {
         muted = changes.mute.newValue;
