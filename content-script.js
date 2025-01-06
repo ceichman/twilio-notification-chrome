@@ -64,7 +64,7 @@ const resetTasksFrame = () => {
     }
     else {
         // if it hit
-        console.log("got the task frame: " + JSON.stringify(tasksFrame))
+        console.log("got the task frame: ")
         console.log(tasksFrame)
 
         // register dom observer
@@ -77,11 +77,26 @@ const resetTasksFrame = () => {
             }
         });
 
+        // start looking for worker name in DOM
+        resetWorkerName();
 
     }
 }
 resetTasksFrame();
 
+let workerName = "testdefault";  // default to broadcast user
+const resetWorkerName = () => {
+    if ((workerName === "testdefault") || (workerName === undefined)) {
+        // if the selector missed
+        setTimeout(() => {
+            workerName = document.querySelectorAll('[data-testid="worker-name"]')[0].innerHTML;
+        }, 1000);
+    }
+    else {
+        // if it hit
+        console.log("got the worker name: ", workerName)
+    }
+}
 
 const taskCanvasClass = "Twilio-TaskListBaseItem"
 
@@ -122,7 +137,7 @@ function requestNotification() {
         headers: {
             'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ message: "You received a task!" }),
+        body: JSON.stringify({ message: "You received a task!", user: workerName }),
     })
     .then(response => response.json())
     .then(data => {

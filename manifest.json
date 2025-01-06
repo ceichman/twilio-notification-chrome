@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": "Bubbie's Twilio Notification",
   "description": "Never miss a task again...",
-  "version": "1.03",
+  "version": "1.04",
   "action": {
     "default_popup": "popup.html",
     "default_icon": "icon.png"
