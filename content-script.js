@@ -90,6 +90,7 @@ const resetWorkerName = () => {
         // if the selector missed
         setTimeout(() => {
             workerName = document.querySelectorAll('[data-testid="worker-name"]')[0].innerHTML;
+            resetWorkerName();
         }, 1000);
     }
     else {
