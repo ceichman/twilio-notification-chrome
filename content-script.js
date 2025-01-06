@@ -118,6 +118,7 @@ function taskAlert(record) {
         return;
     }
 
+    console.log("requesting push notification for user ", workerName);
     requestNotification();
 
     if (!muted) {
