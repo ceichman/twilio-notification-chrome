@@ -19,8 +19,14 @@
  */
 
 let muted = false;
-chrome.storage.local.get(["muted"]).then((result) => {
-    muted = result;
+chrome.storage.sync.get(["muted"]).then((result) => {
+    if ((result != false) && (result != true)) {
+        // if neither false nor true (uninitialized), set to false
+        chrome.storage.sync.set({ muted: false });
+    }
+    else { 
+        muted = result;
+    }
 });
 
 const observeDOM = ( function() {
@@ -64,8 +70,8 @@ const resetTasksFrame = () => {
     }
     else {
         // if it hit
-        console.log("got the task frame: ")
-        console.log(tasksFrame)
+        console.log("got the task frame: ", tasksFrame)
+        // console.log(tasksFrame)
 
         // register dom observer
         observeDOM(tasksFrame, function(mutations) {
@@ -109,9 +115,9 @@ function taskAlert(record) {
     const targetNode = record.addedNodes[0]
     const levels = 7;
     const isTaskElement = findClassInSubtree(targetNode, taskCanvasClass, levels);
-    console.log("mutation record : ")
-    console.log(record)
-    console.log(`found task element in targetNode subtree: ${isTaskElement}`);
+    // console.log("mutation record : ")
+    // console.log(record)
+    // console.log(`found task element in targetNode subtree: ${isTaskElement}`);
     // is it anything OTHER than a new task? if so, return (no sound played)
     if (!isTaskElement) {
         console.log("blocked something from making sound")
@@ -121,9 +127,10 @@ function taskAlert(record) {
     console.log("requesting push notification for user ", workerName);
     requestNotification();
 
-    if (!muted) {
+    if (muted != false) {
         // catch DOMException in case the audio context fails to play (tab not in focus)
         try {
+            console.log("playing sound");
             sound.play();
         }
         catch (error) {
@@ -181,8 +188,8 @@ function findClassInSubtree(element, targetClassName, levels = 7) {
     }
 }
 
-// Update mute options settings when changed in chrome.storage.local.
-chrome.storge.onChanged.addEventListener((changes, area) => {
+// Update mute options settings when changed in chrome.storage.sync.
+chrome.storage.onChanged.addEventListener((changes, area) => {
     if (area === "sync" && changes.mute?.newValue) {
         muted = changes.mute.newValue;
     }
