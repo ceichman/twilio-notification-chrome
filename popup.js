@@ -26,7 +26,7 @@ function openFile(event) {
 function setMute(event) {
     const checked = event.target.checked;
     console.log("setting chrome.storage.sync.mute to " + checked);
-    chrome.storage.sync.set({ mute: checked });
+    chrome.storage.sync.set({ muted: checked });
 }
 
 // TODO: test this file uploading dealio

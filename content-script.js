@@ -23,7 +23,7 @@ let muted = false;
 if (chrome.storage) {
     // Initialize muted state from storage.
     chrome.storage.sync.get(["muted"]).then((result) => {
-        if ((result != false) && (result != true)) {
+        if ((result.muted != false) && (result.muted != true)) {
             // if neither false nor true (uninitialized), set to false
             chrome.storage.sync.set({ muted: false });
         }
@@ -34,9 +34,9 @@ if (chrome.storage) {
 
     // Update mute options settings when changed in chrome.storage.sync from popup.js.
     chrome.storage.onChanged.addEventListener((changes, area) => {
-        if (area === "sync" && changes.mute?.newValue) {
-            console.log(`detected change in chrome.storage.sync.mute: ${changes.mute.newValue}`);
-            muted = changes.mute.newValue;
+        if (area === "sync" && changes.muted?.newValue) {
+            console.log(`detected change in chrome.storage.sync.mute: ${changes.muted.newValue}`);
+            muted = changes.muted.newValue;
         }
     });
 }
