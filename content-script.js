@@ -139,7 +139,7 @@ function taskAlert(record) {
     console.log("requesting push notification for user ", workerName);
     requestNotification();
 
-    if (muted != false) {
+    if (muted != true) {
         // catch DOMException in case the audio context fails to play (tab not in focus)
         try {
             console.log("playing sound");
