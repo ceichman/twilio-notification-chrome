@@ -19,15 +19,27 @@
  */
 
 let muted = false;
-chrome.storage.sync.get(["muted"]).then((result) => {
-    if ((result != false) && (result != true)) {
-        // if neither false nor true (uninitialized), set to false
-        chrome.storage.sync.set({ muted: false });
-    }
-    else { 
-        muted = result;
-    }
-});
+// Twilio is only ever run on Edge so this shouldn't matter, but ...
+if (chrome.storage) {
+    // Initialize muted state from storage.
+    chrome.storage.sync.get(["muted"]).then((result) => {
+        if ((result != false) && (result != true)) {
+            // if neither false nor true (uninitialized), set to false
+            chrome.storage.sync.set({ muted: false });
+        }
+        else { 
+            muted = result;
+        }
+    });
+
+    // Update mute options settings when changed in chrome.storage.sync from popup.js.
+    chrome.storage.onChanged.addEventListener((changes, area) => {
+        if (area === "sync" && changes.mute?.newValue) {
+            console.log(`detected change in chrome.storage.sync.mute: ${changes.mute.newValue}`);
+            muted = changes.mute.newValue;
+        }
+    });
+}
 
 const observeDOM = ( function() {
   const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -187,11 +199,3 @@ function findClassInSubtree(element, targetClassName, levels = 7) {
         return result;
     }
 }
-
-// Update mute options settings when changed in chrome.storage.sync.
-chrome.storage.onChanged.addEventListener((changes, area) => {
-    if (area === "sync" && changes.mute?.newValue) {
-        console.log(`detected change in chrome.storage.sync.mute: ${changes.mute.newValue}`);
-        muted = changes.mute.newValue;
-    }
-})
