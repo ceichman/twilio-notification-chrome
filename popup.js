@@ -22,20 +22,3 @@ function openFile(event) {
 
     };
 }
-
-function setMute(event) {
-    const checked = event.target.checked;
-    console.log("setting chrome.storage.sync.mute to " + checked);
-    chrome.storage.sync.set({ muted: checked });
-}
-
-// TODO: test this file uploading dealio
-/*
-const file = document.getElementById("upload").files[0]
-
-const reader = new FileReader();
-
-reader.addEventListener("onload", function(event) {
-    console.log(e.target.result)
-})
-*/

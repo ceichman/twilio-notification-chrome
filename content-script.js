@@ -18,28 +18,6 @@
  *
  */
 
-let muted = false;
-// Twilio is only ever run on Edge so this shouldn't matter, but ...
-if ("storage" in chrome) {
-    // Initialize muted state from storage.
-    chrome.storage.sync.get(["muted"]).then((result) => {
-        if ((result.muted != false) && (result.muted != true)) {
-            // if neither false nor true (uninitialized), set to false
-            chrome.storage.sync.set({ muted: false });
-        }
-        else { 
-            muted = result;
-        }
-    });
-
-    // Update mute options settings when changed in chrome.storage.sync from popup.js.
-    chrome.storage.onChanged.addEventListener((changes, area) => {
-        if (area === "sync" && changes.muted?.newValue) {
-            console.log(`detected change in chrome.storage.sync.mute: ${changes.muted.newValue}`);
-            muted = changes.muted.newValue;
-        }
-    });
-}
 
 const observeDOM = ( function() {
   const MutationObserver = window.MutationObserver || window.WebKitMutationObserver;
@@ -139,15 +117,12 @@ function taskAlert(record) {
     console.log("requesting push notification for user ", workerName);
     requestNotification();
 
-    if (muted != true) {
-        // catch DOMException in case the audio context fails to play (tab not in focus)
-        try {
-            console.log("playing sound");
-            sound.play();
-        }
-        catch (error) {
-            console.error(error);
-        }
+    try {
+        console.log("playing sound");
+        sound.play();
+    }
+    catch (error) {
+        console.error(error);
     }
 
 }
