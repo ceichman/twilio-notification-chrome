@@ -101,7 +101,7 @@ const resetWorkerName = () => {
     }
     else {
         // if it hit
-        console.log("got the worker name: ", workerName)
+        console.log("got the worker name: ", workerName);
     }
 }
 
@@ -120,7 +120,7 @@ function taskAlert(record) {
     // console.log(`found task element in targetNode subtree: ${isTaskElement}`);
     // is it anything OTHER than a new task? if so, return (no sound played)
     if (!isTaskElement) {
-        console.log("blocked something from making sound")
+        console.log("blocked something from making sound");
         return;
     }
 
@@ -191,6 +191,7 @@ function findClassInSubtree(element, targetClassName, levels = 7) {
 // Update mute options settings when changed in chrome.storage.sync.
 chrome.storage.onChanged.addEventListener((changes, area) => {
     if (area === "sync" && changes.mute?.newValue) {
+        console.log(`detected change in chrome.storage.sync.mute: ${changes.mute.newValue}`);
         muted = changes.mute.newValue;
     }
 })
