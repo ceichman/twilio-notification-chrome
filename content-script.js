@@ -20,7 +20,7 @@
 
 let muted = false;
 // Twilio is only ever run on Edge so this shouldn't matter, but ...
-if (chrome.storage != undefined) {
+if (chrome.storage !== undefined) {
     // Initialize muted state from storage.
     chrome.storage.sync.get(["muted"]).then((result) => {
         if ((result.muted != false) && (result.muted != true)) {
